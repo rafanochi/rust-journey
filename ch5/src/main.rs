@@ -6,8 +6,8 @@ struct Person {
     age: u16, // some waifus are even 500+ years old
 }
 impl Person {
-    fn make_child(&self, name: &str) -> Person {
-        Person {
+    fn make_child(&self, name: &str) -> Self {
+        Self {
             name: name.to_string(),
             age: 0,
             ..self.clone()
