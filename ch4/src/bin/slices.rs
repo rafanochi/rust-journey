@@ -1,16 +1,15 @@
 use std::io;
 
-fn first_word(s: &String) -> String {
-    let mut temp = String::from("");
-    for item in s.chars() {
-        if item == ' ' || item == '\n' {
-            break;
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[..i];
         }
-        let c = item.to_string();
-        temp.push_str(&c);
     }
 
-    temp
+    &s
 }
 
 fn main() {
@@ -21,4 +20,10 @@ fn main() {
 
     let w = first_word(&s);
     println!("FIRST WORD: {w}");
+
+    let ss = String::from("Hitagi Senjougahara");
+    let hitagi = &ss[..6];
+    let senjougahara = &ss[7..];
+
+    println!("{hitagi} {senjougahara}");
 }
