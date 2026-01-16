@@ -3,7 +3,7 @@
 
   inputs = {
     # Use the unstable channel for the latest packages
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     # flake-utils to support multiple systems easily
     flake-utils.url = "github:numtide/flake-utils";
   };
