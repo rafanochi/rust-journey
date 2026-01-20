@@ -15,6 +15,7 @@ impl Waifu<'_> {
 }
 
 pub fn add(left: u64, right: u64) -> u64 {
+    println!("HHHHHHEEEEEEREEEEEE");
     left + right
 }
 
@@ -45,6 +46,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn can_marry_asuna() {
         let w = Waifu {
             name: "Asuna",
@@ -70,6 +72,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn add_two__numbers() -> Result<(), String> {
         let result = add(2, 7);
         match result {
@@ -79,6 +82,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn hihihihi() {
         panic!("FAILLLLUURE")
     }
