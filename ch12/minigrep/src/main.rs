@@ -1,27 +1,51 @@
-use std::env;
+use minigrep::search;
+use std::{env, error::Error, fs, process::exit};
 
 struct Config<'a> {
-    text: &'a str,
+    query: &'a str,
     path: &'a str,
+    ignore_case: bool,
 }
 impl Config<'_> {
-    fn build(args: &[String]) -> Result<Config<'_>, impl Eq> {
+    fn build(args: &[String]) -> Result<Config<'_>, &'static str> {
         if args.len() < 3 {
             return Err("not enough arguments");
         }
 
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
         Ok(Config {
-            text: &args[1],
+            query: &args[1],
             path: &args[2],
+            ignore_case: ignore_case,
         })
     }
 }
 
+fn run(c: &Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(c.path)?;
+
+    for line in search(c.query, &contents) {
+        println!("{line:?}");
+    }
+
+    Ok(())
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let config = Config::build(&args);
+    let config = Config::build(&args).unwrap_or_else(|err| {
+        eprintln!("Couldn't parse arguments: {err:?}");
+        exit(1);
+    });
 
-    // let contents = fs::read_to_string(config.unwrap().path).expect("couln't read the file");
+    if let Err(e) = run(&config) {
+        eprintln!("Application error: {e}");
+        exit(1);
+    };
 
-    // println!("{contents}");
+    // match run(&config){
+    //    Ok(result) => println!("{result}"),
+    //    Err(e) => {}
+    // }
 }
