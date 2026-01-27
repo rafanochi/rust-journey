@@ -1,3 +1,5 @@
+use std::{cell::RefCell, rc::Rc};
+
 pub trait Messenger {
     fn send(&self, msg: &str);
 }
@@ -73,5 +75,23 @@ mod tests {
 }
 
 fn main() {
-    println!("Hello from refcell")
+    let a = Rc::new(RefCell::new(0));
+    let b = Rc::clone(&a);
+    let c = Rc::clone(&a);
+
+    println!(
+        "a,b,c with initial a: a = {}, b = {}, c = {}",
+        a.borrow(),
+        b.borrow(),
+        c.borrow()
+    );
+
+    *a.borrow_mut() += 10;
+
+    println!(
+        "after adding 10 to a: a = {}, b = {}, c = {}",
+        a.borrow(),
+        b.borrow(),
+        c.borrow()
+    );
 }
