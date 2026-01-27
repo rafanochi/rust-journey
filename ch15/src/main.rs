@@ -10,4 +10,12 @@ fn main() {
     println!("{b}");
 
     let _list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+
+    let x = 5;
+    let y = &x;
+    let z = Box::new(1000);
+
+    println!("{}", x);
+    println!("{}", *y);
+    println!("{}", *z);
 }
