@@ -173,7 +173,6 @@ impl SimpleComponent for App {
         match message {
             AppMsg::AddCounter => {
                 self.counters.guard().push_back(self.created_widgets);
-                self.created_widgets = self.created_widgets.wrapping_add(1);
             }
             AppMsg::RemoveCounter => {
                 self.counters.guard().pop_back();
