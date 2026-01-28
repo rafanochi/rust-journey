@@ -1,5 +1,6 @@
-use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt};
-use relm4::factory::{DynamicIndex, FactoryComponent, FactorySender, FactoryVecDeque};
+use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt, GridExt};
+use relm4::factory::positions::GridPosition;
+use relm4::factory::{DynamicIndex, FactoryComponent, FactorySender, FactoryVecDeque, Position};
 use relm4::{gtk, ComponentParts, ComponentSender, RelmApp, RelmWidgetExt, SimpleComponent};
 
 #[derive(Debug)]
@@ -26,7 +27,7 @@ impl FactoryComponent for Counter {
     type Input = CounterMsg;
     type Output = CounterOutput;
     type CommandOutput = ();
-    type ParentWidget = gtk::Box;
+    type ParentWidget = gtk::Grid;
 
     view! {
         #[root]
@@ -53,29 +54,29 @@ impl FactoryComponent for Counter {
                 connect_clicked => CounterMsg::Decrement,
             },
 
-            #[name(move_up_button)]
-            gtk::Button{
-                set_label: "Up",
-                connect_clicked[sender, index] => move |_| {
-                    sender.output(CounterOutput::MoveUp(index.clone())).unwrap();
-                },
-            },
+//             #[name(move_up_button)]
+//             gtk::Button{
+//                 set_label: "Up",
+//                 connect_clicked[sender, index] => move |_| {
+//                     sender.output(CounterOutput::MoveUp(index.clone())).unwrap();
+//                 },
+//             },
 
-            #[name(move_down_button)]
-            gtk::Button{
-                set_label: "Down",
-                connect_clicked[sender, index] => move |_|{
-                    sender.output(CounterOutput::MoveDown(index.clone())).unwrap();
-                },
-            },
+//             #[name(move_down_button)]
+//             gtk::Button{
+//                 set_label: "Down",
+//                 connect_clicked[sender, index] => move |_|{
+//                     sender.output(CounterOutput::MoveDown(index.clone())).unwrap();
+//                 },
+//             },
 
-            #[name(move_top_button)]
-            gtk::Button{
-                set_label: "Top",
-                connect_clicked[sender, index] => move |_| {
-                    sender.output(CounterOutput::MoveTop(index.clone())).unwrap();
-                },
-            },
+//             #[name(move_top_button)]
+//             gtk::Button{
+//                 set_label: "Top",
+//                 connect_clicked[sender, index] => move |_| {
+//                     sender.output(CounterOutput::MoveTop(index.clone())).unwrap();
+//                 },
+//             },
         },
 
     }
@@ -137,9 +138,10 @@ impl SimpleComponent for App {
                 },
 
                 #[local_ref]
-                counter_box -> gtk::Box {
+                counter_box -> gtk::Grid {
                     set_orientation: gtk::Orientation::Vertical,
-                    set_spacing: 5,
+                    set_column_spacing: 15,
+                    set_row_spacing: 5,
                 }
             }
         }
@@ -151,7 +153,7 @@ impl SimpleComponent for App {
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let counters = FactoryVecDeque::builder()
-            .launch(gtk::Box::default())
+            .launch(gtk::Grid::default())
             .forward(sender.input_sender(), |output| match output {
                 CounterOutput::MoveTop(index) => AppMsg::MoveTop(index),
                 CounterOutput::MoveUp(index) => AppMsg::MoveUp(index),
@@ -198,6 +200,22 @@ impl SimpleComponent for App {
         }
     }
 }
+
+
+impl Position<GridPosition, DynamicIndex> for Counter {
+    fn position(&self, index: &DynamicIndex) -> GridPosition {
+        let index = index.current_index();
+        let x = index % 5;
+        let y = index / 5;
+        GridPosition {
+            column: y as i32,
+            row: x as i32,
+            width: 1,
+            height: 1,
+        }
+    }
+}
+
 
 fn main() {
     let app = RelmApp::new("rafa.test.factory");
