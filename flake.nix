@@ -1,27 +1,46 @@
 {
-  description = "A simple Rust dev shell using Nix Flakes";
+  description = "Build truly native applications with ease!";
 
   inputs = {
-    # Use the unstable channel for the latest packages
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # flake-utils to support multiple systems easily
+    # Stable for keeping thins clean
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+
+    # Fresh and new for testing
+    # nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "git+https://git.oss.uzinfocom.uz/xinux/nixpkgs?ref=nixos-unstable&shallow=1";
+
+    # The flake-utils library
     flake-utils.url = "github:numtide/flake-utils";
+
+    # rust-overlays
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { nixpkgs, flake-utils, rust-overlay, ... }:
+    # @ inputs
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system}; in
-      {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            cargo
-            rustfmt
-            clippy
-            rustc
-            rust-analyzer
+      let
+        overlays = [ (import rust-overlay) ];
+        pkgs = import nixpkgs { inherit system overlays; };
+
+        rustVersion = "latest";
+        rust = pkgs.rust-bin.stable.${rustVersion}.default.override {
+          extensions = [
+            "rustc"
+            "cargo"
+            "rustfmt"
+            "clippy"
+            "rust-analyzer"
+            "rust-src"
+            # "cargo-watch"
           ];
-        }
-    );
+        };
 
+      in {
+        # Nix script formatter
+        formatter = pkgs.alejandra;
+
+        # Development environment
+        devShells.default = import ./shell.nix { inherit pkgs rust; };
+      });
 }
-
