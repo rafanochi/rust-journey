@@ -13,19 +13,14 @@
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs = [
-            pkgs.cargo
-            pkgs.rustfmt
-            pkgs.clippy
-            pkgs.rustc
-            pkgs.rust-analyzer
+          buildInputs = with pkgs; [
+            cargo
+            rustfmt
+            clippy
+            rustc
+            rust-analyzer
           ];
-          shellHook = ''
-            echo "Welcome to Rust on ${system}!"
-            zsh
-          '';
-        };
-      }
+        }
     );
 
 }
