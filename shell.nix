@@ -17,6 +17,7 @@ pkgs.stdenv.mkDerivation
 
       # rust
       rustToolChain
+      rustlings
     ];
 
   # Set Environment Variables
