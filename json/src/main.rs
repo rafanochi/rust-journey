@@ -1,6 +1,6 @@
 use std::{fmt::Error, fs};
 
-use json::types::{comment::Comment, post::Post, user::User};
+use json::types::{album::Album, comment::Comment, post::Post, user::User};
 
 fn main() -> Result<(), std::io::Error> {
     let user_file = fs::read_to_string("assets/users.json")?;
@@ -12,8 +12,12 @@ fn main() -> Result<(), std::io::Error> {
     let comment_file = fs::read_to_string("assets/comments.json")?;
     let comments: Vec<Comment> = serde_json::from_str(&comment_file)?;
 
+    let album_file = fs::read_to_string("assets/albums.json")?;
+    let albums: Vec<Album> = serde_json::from_str(&album_file)?;
+
     users.into_iter().for_each(|x| println!("{x:?}"));
     posts.into_iter().for_each(|x| println!("{x:?}"));
     comments.into_iter().for_each(|x| println!("{x:?}"));
+    albums.into_iter().for_each(|x| println!("{x:?}"));
     Ok(())
 }
