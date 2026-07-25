@@ -1,4 +1,4 @@
-use std::{fmt::Error, fs};
+use std::fs;
 
 use json::types::{
     album::Album, comment::Comment, photos::Photo, post::Post, todo::Todo, user::User,
