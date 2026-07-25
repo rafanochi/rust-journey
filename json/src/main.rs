@@ -1,6 +1,6 @@
 use std::{fmt::Error, fs};
 
-use json::User;
+use json::types::user::User;
 
 fn main() -> Result<(), std::io::Error> {
     let content = fs::read_to_string("assets/users.json")?;

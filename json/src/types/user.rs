@@ -1,0 +1,36 @@
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+pub struct User {
+    id: u32,
+    name: String,
+    username: String,
+    email: String,
+    address: Address,
+    phone: String,
+    website: String,
+    company: Company,
+}
+
+#[derive(Deserialize, Debug)]
+struct Address {
+    street: String,
+    suite: String,
+    city: String,
+    zipcode: String,
+    geo: Geo,
+}
+
+#[derive(Deserialize, Debug)]
+struct Geo {
+    lat: String,
+    lng: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct Company {
+    name: String,
+    #[serde(rename = "catchPhrase")]
+    catch_phrase: String,
+    bs: String,
+}
