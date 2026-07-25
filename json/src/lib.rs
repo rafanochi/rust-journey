@@ -1,9 +1,7 @@
-use std::{fmt::Error, fs};
-
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
-struct User {
+pub struct User {
     id: u32,
     name: String,
     username: String,
@@ -35,11 +33,4 @@ struct Company {
     #[serde(rename = "catchPhrase")]
     catch_phrase: String,
     bs: String,
-}
-
-fn main() -> Result<(), std::io::Error> {
-    let content = fs::read_to_string("assets/users.json")?;
-    let users: Vec<User> = serde_json::from_str(&content)?;
-    users.into_iter().for_each(|x| println!("{x:?}"));
-    Ok(())
 }
