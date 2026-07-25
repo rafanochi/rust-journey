@@ -5,29 +5,32 @@ use json::types::{
 };
 
 fn main() -> Result<(), std::io::Error> {
-    let user_file = fs::read_to_string("assets/users.json")?;
-    let users: Vec<User> = serde_json::from_str(&user_file)?;
-
-    let post_file = fs::read_to_string("assets/posts.json")?;
-    let posts: Vec<Post> = serde_json::from_str(&post_file)?;
-
-    let comment_file = fs::read_to_string("assets/comments.json")?;
-    let comments: Vec<Comment> = serde_json::from_str(&comment_file)?;
-
-    let album_file = fs::read_to_string("assets/albums.json")?;
-    let albums: Vec<Album> = serde_json::from_str(&album_file)?;
-
-    let photo_file = fs::read_to_string("assets/photos.json")?;
-    let photos: Vec<Photo> = serde_json::from_str(&photo_file)?;
-
-    let todo_file = fs::read_to_string("assets/todos.json")?;
-    let todos: Vec<Todo> = serde_json::from_str(&todo_file)?;
-
-    users.into_iter().for_each(|x| println!("{x:?}"));
-    posts.into_iter().for_each(|x| println!("{x:?}"));
-    comments.into_iter().for_each(|x| println!("{x:?}"));
-    albums.into_iter().for_each(|x| println!("{x:?}"));
-    photos.into_iter().for_each(|x| println!("{x:?}"));
-    todos.into_iter().for_each(|x| println!("{x:?}"));
+    fs::read_dir("assets")?
+        .into_iter()
+        // .filter_map(|x| match x {
+        //     Ok(y) => fs::read_to_string(y.path()).ok(),
+        //     Err(_) => None,
+        // })
+        .filter_map(|x| x.map_or(None, |y| fs::read_to_string(y.path()).ok())) // rewrite the old filter_map
+        .for_each(|path| {
+            if let Some(x) = serde_json::from_str::<Vec<User>>(&path).ok() {
+                println!("{x:?}")
+            }
+            if let Some(x) = serde_json::from_str::<Vec<Post>>(&path).ok() {
+                println!("{x:?}")
+            }
+            if let Some(x) = serde_json::from_str::<Vec<Comment>>(&path).ok() {
+                println!("{x:?}")
+            }
+            if let Some(x) = serde_json::from_str::<Vec<Album>>(&path).ok() {
+                println!("{x:?}")
+            }
+            if let Some(x) = serde_json::from_str::<Vec<Photo>>(&path).ok() {
+                println!("{x:?}")
+            }
+            if let Some(x) = serde_json::from_str::<Vec<Todo>>(&path).ok() {
+                println!("{x:?}")
+            }
+        });
     Ok(())
 }
