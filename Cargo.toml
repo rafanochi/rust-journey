@@ -1,9 +1,7 @@
 [package]
-name = "counter"
+name = "rust-journey"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-relm4 = "0.9.1"
-relm4-components = "0.9.1"
-
+image = "0.25.10"
