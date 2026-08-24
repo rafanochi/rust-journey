@@ -1,17 +1,35 @@
 use image::{GenericImage, GenericImageView, Rgba, open};
 
-fn main() {
-    let mut binding = open("./assets/reze.png").unwrap();
+static SRC: &str = "./assets/reze.png";
+// static RESULT: &str = "./assets/reze.png";
+static TEXT: &str = "Asuna";
 
-    let text: Vec<_> = "Asuna".into();
-    binding
+fn main() {
+    let text: Vec<_> = TEXT.into();
+
+    // Hide the text inside text
+    let mut image = open(SRC).unwrap();
+    image
         .clone()
         .pixels()
         .enumerate()
         .take(text.len())
         .for_each(|(i, (x, y, Rgba([r, g, b, a])))| {
-            binding.put_pixel(x, y, Rgba([r, g + text[i], b, a]));
+            image.put_pixel(x, y, Rgba([r, g + text[i], b, a]));
         });
 
-    binding.save("./assets/test.png").unwrap();
+    image.save("./assets/result.png").unwrap();
+
+    // Read it back
+    // let mut binding = open(RESULT).unwrap();
+    // let result: Vec<u8> = Vec::new();
+    // binding
+    //     .clone()
+    //     .pixels()
+    //     .enumerate()
+    //     .take(text.len())
+    //     .for_each(|(i, (x, y, Rgba([r, g, b, a])))| {
+    //         binding.put_pixel(x, y, Rgba([r, g + text[i], b, a]));
+    //     });
+    // binding.save("./assets/result.png").unwrap();
 }
