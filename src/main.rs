@@ -31,10 +31,10 @@ fn main() {
     println!("======READING=====");
     let pattern = PATTERN.as_bytes();
     let binding = open(RESULT).unwrap();
-    let result = binding.as_bytes().chunks(text.len()).find_map(|x| {
-        (x.starts_with(pattern) && x.ends_with(pattern))
-            .then(|| x.strip_circumfix(pattern, pattern))
-    });
+    let result = binding
+        .as_bytes()
+        .chunks(text.len())
+        .find_map(|x| x.strip_circumfix(pattern, pattern));
 
     println!("Hidden text is: {:?}", result.is_some())
 }
