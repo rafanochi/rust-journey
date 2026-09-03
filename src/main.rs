@@ -9,7 +9,6 @@ static PATTERN: &str = "!@#$";
 
 fn main() {
     let text: Vec<_> = format!("{PATTERN}{TEXT}{PATTERN}").into();
-    let mut pixels_changed: Vec<(u32, u32)> = Vec::new();
 
     // Hide the text inside text
     println!("======HIDING=====");
@@ -21,7 +20,6 @@ fn main() {
         .take(text.len())
         .for_each(|(i, (x, y, Rgba([r, _g, b, a])))| {
             println!("{}", text[i].clone());
-            pixels_changed.push((x, y));
             image.put_pixel(x, y, Rgba([r, text[i], b, a]));
         });
 
@@ -31,10 +29,13 @@ fn main() {
     println!("======READING=====");
     let pattern = PATTERN.as_bytes();
     let binding = open(RESULT).unwrap();
-    let result = binding
-        .as_bytes()
+    let pixels = binding
+        .pixels()
+        .map(|(_, _, Rgba([_r, g, _b, _a]))| g.clone())
+        .collect::<Vec<u8>>();
+    let result = pixels
         .chunks(text.len())
         .find_map(|x| x.strip_circumfix(pattern, pattern));
 
-    println!("Hidden text is: {:?}", result.is_some())
+    println!("Hidden text is: {:?}", result.unwrap())
 }
