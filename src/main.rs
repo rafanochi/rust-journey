@@ -1,6 +1,4 @@
-use std::ops::BitAnd;
-
-use image::{GenericImage, GenericImageView, Pixel, Rgba, open};
+use image::{GenericImage, GenericImageView, Rgba, open};
 
 static SRC: &str = "./assets/reze.png";
 static RESULT: &str = "./assets/reze.png";
@@ -33,9 +31,10 @@ fn main() {
         .pixels()
         .map(|(_, _, Rgba([_r, g, _b, _a]))| g.clone())
         .collect::<Vec<u8>>();
-    let result = pixels
-        .chunks(text.len())
-        .find_map(|x| x.strip_circumfix(pattern, pattern));
+    let result = pixels.chunks(text.len()).find_map(|x| {
+        println!("the pixel: {:?}", String::from_utf8(x.to_vec()));
+        x.strip_circumfix(pattern, pattern)
+    });
 
     println!("Hidden text is: {:?}", result.unwrap())
 }
