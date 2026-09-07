@@ -10,7 +10,7 @@ Normally, pixel is consisted from 3 colors: red, green, blue and sometimes it ev
 *How is the pixel represented in a display?* \
 To put it simply, we just tell the computer how much red/green/blue we want in particular pixel in the range `0..255` each, and they are merged together to create one new unique color. 
 
-For example purple is `rgb(191,0,255)` which has 74.9% red, 0% green and 100% blue in it. \  
+For example purple is `rgb(191,0,255)` which has 74.9% red, 0% green and 100% blue in it.  
 Now imagine, if we just increase the red channel from 191 to 192, will it be noticable to human eye? Of course no. 
 
 And we are talking about just 1 pixel here, how much would actual photo would change if we change its some pixels color to just 1% more or less? Almost none right?
