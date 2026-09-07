@@ -70,7 +70,6 @@ let pixels = image
   
 // creating text-length chunks from pixel array, and searching for a chunk that satisfies our hidden data
 let result = pixels.chunks(text.len()).find_map(|x| {
-    println!("the pixel: {:?}", String::from_utf8(x.to_vec()));
     x.strip_circumfix(pattern, pattern)
 });  
     
