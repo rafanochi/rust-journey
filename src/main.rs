@@ -34,7 +34,8 @@ fn main() -> anyhow::Result<()> {
         .map(|(_, _, Rgba([_r, g, _b, _a]))| g.clone())
         .collect::<Vec<u8>>();
 
-    // creating text-length chunks from pixel array, and searching for a chunk that satisfies our hidden data
+    // creating text-length chunks from pixel array, and searching for 
+    // a chunk that satisfies our hidden data
     let result = pixels
         .chunks(text.len())
         .find_map(|x| x.strip_circumfix(pattern, pattern));
