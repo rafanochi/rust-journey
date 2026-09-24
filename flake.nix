@@ -28,10 +28,14 @@
       let
         overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs { inherit system overlays; };
+        lib = pkgs.lib;
       in
       {
         # Nix script formatter
         formatter = pkgs.alejandra;
+
+        # Package
+        packages.default = import ./package.nix { inherit pkgs lib;  };
 
         # Development environment
         devShells.default = import ./shell.nix { inherit pkgs; };
