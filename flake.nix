@@ -15,31 +15,26 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { nixpkgs, flake-utils, rust-overlay, ... }:
+  outputs =
+    {
+      nixpkgs,
+      flake-utils,
+      rust-overlay,
+      ...
+    }:
     # @ inputs
-    flake-utils.lib.eachDefaultSystem (system:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs { inherit system overlays; };
-
-        rustVersion = "latest";
-        rust = pkgs.rust-bin.stable.${rustVersion}.default.override {
-          extensions = [
-            "rustc"
-            "cargo"
-            "rustfmt"
-            "clippy"
-            "rust-analyzer"
-            "rust-src"
-            # "cargo-watch"
-          ];
-        };
-
-      in {
+      in
+      {
         # Nix script formatter
         formatter = pkgs.alejandra;
 
         # Development environment
-        devShells.default = import ./shell.nix { inherit pkgs rust; };
-      });
+        devShells.default = import ./shell.nix { inherit pkgs; };
+      }
+    );
 }
