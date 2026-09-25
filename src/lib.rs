@@ -1,11 +1,11 @@
-use std::fs;
-
 use anyhow::Ok;
+use std::fs;
 
 static THUMB_CACHE: &str = "$XDG_CACHE_HOME/thumbnails";
 static THUMB_CACHE_FALLBACK: &str = "$HOME/.cache/thumbnails";
 static THUMB_IMAGE_FORMAT: &str = "png";
 
+#[derive(Clone, Copy)]
 pub enum ThumSize {
     Normal,
     Large,
@@ -23,7 +23,7 @@ impl ThumSize {
         }
     }
 }
-impl From<ThumSize> for u16 {
+impl From<ThumSize> for usize {
     fn from(value: ThumSize) -> Self {
         use ThumSize::*;
         match value {
