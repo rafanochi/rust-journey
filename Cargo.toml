@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 magick_rust = "2.1.1"
 anyhow = "1.0"
+http = "1.5.0"
+mime = "0.3.17"

@@ -1,9 +1,76 @@
-use anyhow::Ok;
-use std::fs;
+pub mod util;
+
+use http::Uri;
+use magick_rust::MagickWand;
+use mime::{Mime, Name, PNG};
+use std::{collections::HashMap, fs::metadata, os::unix::fs::MetadataExt};
+
+use crate::util::find_mimetype;
 
 static THUMB_CACHE: &str = "$XDG_CACHE_HOME/thumbnails";
 static THUMB_CACHE_FALLBACK: &str = "$HOME/.cache/thumbnails";
-static THUMB_IMAGE_FORMAT: &str = "png";
+static THUMB_IMAGE_FORMAT: Name = PNG;
+
+pub struct Meta {
+    uri: Uri,
+    mtime: i64,
+    size: Option<u64>,
+    mimetype: Option<Mime>,
+    description: Option<String>,
+    software: Option<String>,
+}
+impl Meta {
+    fn fetch_meta(filename: &str, wand: MagickWand) -> anyhow::Result<Meta> {
+        let metadata = metadata(filename)?;
+
+        Ok(Meta {
+            uri: Uri::default(),
+            mtime: metadata.mtime(),
+            size: metadata.size().into(),
+            mimetype: find_mimetype(filename),
+            description: wand.get_image_property("Description").ok(),
+            software: wand.get_image_property("Software").ok(),
+        })
+    }
+    fn to_hash(&self) -> HashMap<String, String> {
+        let mut map = HashMap::new();
+
+        let Meta {
+            uri,
+            mtime,
+            size,
+            mimetype,
+            description,
+            software,
+        } = self;
+
+        let list = [
+            ("Thumb::URI", Some(uri.to_string())),
+            ("Thumb::MTime", Some(mtime.to_string())),
+            ("Thumb::Size", size.and_then(|x| x.to_string().into())),
+            (
+                "Thumb::MimeType",
+                mimetype.as_ref().and_then(|x| x.to_string().into()),
+            ),
+            (
+                "Description",
+                description.as_ref().and_then(|x| x.to_string().into()),
+            ),
+            (
+                "Software",
+                software.as_ref().and_then(|x| x.to_string().into()),
+            ),
+        ];
+
+        list.into_iter()
+            .filter(|(_, k)| k.is_some())
+            .for_each(|(key, v)| {
+                v.and_then(|value| map.insert(key.into(), value));
+            });
+
+        map
+    }
+}
 
 #[derive(Clone, Copy)]
 pub enum ThumSize {
@@ -33,18 +100,4 @@ impl From<ThumSize> for usize {
             XXLarge => 1024,
         }
     }
-}
-
-pub fn get_cache_path() -> anyhow::Result<String> {
-    if fs::exists(THUMB_CACHE).is_ok() {
-        Ok(THUMB_CACHE.into())
-    } else {
-        fs::create_dir_all(THUMB_CACHE_FALLBACK)?;
-        Ok(THUMB_CACHE_FALLBACK.into())
-    }
-}
-
-pub fn get_cache_fail_path() -> anyhow::Result<String> {
-    let cache = get_cache_path()?;
-    Ok(format!("{cache}/fail"))
 }
