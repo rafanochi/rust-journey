@@ -21,7 +21,7 @@ pub struct Meta {
     software: Option<String>,
 }
 impl Meta {
-    fn fetch_meta(filepath: &Path, wand: MagickWand) -> Result<Meta> {
+    fn fetch_meta(filepath: &Path, wand: &MagickWand) -> Result<Meta> {
         let metadata = metadata(filepath)?;
         let uri = Uri::try_from(filepath.to_string_lossy().to_string())?;
 
