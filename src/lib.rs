@@ -1,11 +1,12 @@
 pub mod util;
 
+use anyhow::Result;
 use http::Uri;
 use magick_rust::MagickWand;
 use mime::{Mime, Name, PNG};
-use std::{collections::HashMap, fs::metadata, os::unix::fs::MetadataExt};
+use std::{collections::HashMap, fs::metadata, os::unix::fs::MetadataExt, path::Path};
 
-use crate::util::find_mimetype;
+use crate::util::{find_mimetype, get_cache_path};
 
 static THUMB_CACHE: &str = "$XDG_CACHE_HOME/thumbnails";
 static THUMB_CACHE_FALLBACK: &str = "$HOME/.cache/thumbnails";
@@ -20,21 +21,20 @@ pub struct Meta {
     software: Option<String>,
 }
 impl Meta {
-    fn fetch_meta(filename: &str, wand: MagickWand) -> anyhow::Result<Meta> {
-        let metadata = metadata(filename)?;
+    fn fetch_meta(filepath: &Path, wand: MagickWand) -> Result<Meta> {
+        let metadata = metadata(filepath)?;
+        let uri = Uri::try_from(filepath.to_string_lossy().to_string())?;
 
         Ok(Meta {
-            uri: Uri::default(),
+            uri,
             mtime: metadata.mtime(),
             size: metadata.size().into(),
-            mimetype: find_mimetype(filename),
+            mimetype: find_mimetype(filepath),
             description: wand.get_image_property("Description").ok(),
             software: wand.get_image_property("Software").ok(),
         })
     }
-    fn to_hash(&self) -> HashMap<String, String> {
-        let mut map = HashMap::new();
-
+    fn to_hashmap(&self) -> HashMap<&str, String> {
         let Meta {
             uri,
             mtime,
@@ -62,12 +62,12 @@ impl Meta {
             ),
         ];
 
+        let mut map = HashMap::new();
         list.into_iter()
             .filter(|(_, k)| k.is_some())
             .for_each(|(key, v)| {
-                v.and_then(|value| map.insert(key.into(), value));
+                v.and_then(|value| map.insert(key, value));
             });
-
         map
     }
 }
