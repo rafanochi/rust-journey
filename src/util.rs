@@ -6,7 +6,7 @@ use mime::Mime;
 use std::{
     fs,
     io::Write,
-    path::{Path, PathBuf, absolute},
+    path::{Path, PathBuf},
     sync::Once,
 };
 
@@ -30,15 +30,22 @@ pub fn thumbnail(filepath: &str, size: ThumSize) -> Result<PathBuf> {
         wand.set_image_property(k, &v)?;
     }
 
-    // saving image
+    // generate thumbnail path
+    let thumb_path = gen_thumb_path(filepath)?;
+
+    // saving thumbnail
     let bytes = wand.write_image_blob(THUMB_IMAGE_FORMAT.into())?;
+    let mut file = fs::File::create(&thumb_path)?;
+    file.write(&bytes)?;
+
+    // Return the path to thumbnail
+    Ok(thumb_path)
+}
+
+pub fn gen_thumb_path(filepath: &str) -> Result<PathBuf> {
     let filename = gen_filename(filepath);
     let mut cache = get_cache_path()?;
     cache.push(filename);
-
-    dbg!(&cache);
-    let mut file = fs::File::create(&cache)?;
-    file.write(&bytes)?;
 
     Ok(cache)
 }
@@ -49,7 +56,7 @@ pub fn get_cache_path() -> Result<PathBuf> {
     if !exists {
         fs::create_dir_all(&cache)?;
     }
-    dbg!(&cache);
+
     Ok(cache.into())
 }
 
