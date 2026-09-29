@@ -31,7 +31,7 @@ pub fn thumbnail(filepath: &str, size: ThumSize) -> Result<PathBuf> {
     }
 
     // generate thumbnail path
-    let thumb_path = gen_thumb_path(filepath)?;
+    let thumb_path = gen_thumb_path(filepath, size)?;
 
     // saving thumbnail
     let bytes = wand.write_image_blob(THUMB_IMAGE_FORMAT.into())?;
@@ -42,11 +42,13 @@ pub fn thumbnail(filepath: &str, size: ThumSize) -> Result<PathBuf> {
     Ok(thumb_path)
 }
 
-pub fn gen_thumb_path(filepath: &str) -> Result<PathBuf> {
+pub fn gen_thumb_path(filepath: &str, size: ThumSize) -> Result<PathBuf> {
     let filename = gen_filename(filepath);
     let mut cache = get_cache_path()?;
+    cache.push(size.path());
     cache.push(filename);
 
+    dbg!(&cache);
     Ok(cache)
 }
 

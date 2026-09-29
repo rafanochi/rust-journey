@@ -4,23 +4,9 @@ use anyhow::Result;
 use http::Uri;
 use magick_rust::MagickWand;
 use mime::{Mime, Name, PNG};
-use std::{
-    cell::LazyCell,
-    collections::HashMap,
-    fs::metadata,
-    os::unix::fs::MetadataExt,
-    path::{Path, PathBuf},
-};
+use std::{collections::HashMap, fs::metadata, os::unix::fs::MetadataExt, path::Path};
 
 use crate::util::find_mimetype;
-
-// static CONFIG_FILE: Lazy<PathBuf> = Lazy::new(|| {
-//     dirs::home_dir()
-//         .unwrap()
-//         .join(".config")
-//         .join("myapp")
-//         .join("config.toml")
-// });
 
 static THUMB_CACHE: &str = "$XDG_CACHE_HOME/thumbnails";
 static THUMB_CACHE_FALLBACK: &str = "$HOME/.cache/thumbnails";
