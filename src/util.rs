@@ -79,3 +79,14 @@ pub fn gen_filename(filepath: &str) -> String {
     let digest = md5::compute(filepath.as_bytes());
     format!("{digest:?}.{}", THUMB_IMAGE_FORMAT.as_str())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn gen_thumbnail() {
+        let thumbnail = thumbnail("./test/reze.jxl", ThumSize::Normal);
+        assert!(thumbnail.is_ok(), "Thumbnbail couldn't be created")
+    }
+}
