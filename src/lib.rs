@@ -4,14 +4,29 @@ use anyhow::Result;
 use http::Uri;
 use magick_rust::MagickWand;
 use mime::{Mime, Name, PNG};
-use std::{collections::HashMap, fs::metadata, os::unix::fs::MetadataExt, path::Path};
+use std::{
+    cell::LazyCell,
+    collections::HashMap,
+    fs::metadata,
+    os::unix::fs::MetadataExt,
+    path::{Path, PathBuf},
+};
 
-use crate::util::{find_mimetype, get_cache_path};
+use crate::util::find_mimetype;
+
+// static CONFIG_FILE: Lazy<PathBuf> = Lazy::new(|| {
+//     dirs::home_dir()
+//         .unwrap()
+//         .join(".config")
+//         .join("myapp")
+//         .join("config.toml")
+// });
 
 static THUMB_CACHE: &str = "$XDG_CACHE_HOME/thumbnails";
 static THUMB_CACHE_FALLBACK: &str = "$HOME/.cache/thumbnails";
 static THUMB_IMAGE_FORMAT: Name = PNG;
 
+#[derive(Debug)]
 pub struct Meta {
     uri: Uri,
     mtime: i64,
@@ -20,10 +35,13 @@ pub struct Meta {
     description: Option<String>,
     software: Option<String>,
 }
+
 impl Meta {
     fn fetch_meta(filepath: &Path, wand: &MagickWand) -> Result<Meta> {
         let metadata = metadata(filepath)?;
-        let uri = Uri::try_from(filepath.to_string_lossy().to_string())?;
+        let path = filepath.to_string_lossy().to_string();
+        dbg!(&path);
+        let uri = Uri::try_from(path)?;
 
         Ok(Meta {
             uri,
