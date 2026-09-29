@@ -10,6 +10,7 @@ use std::{
     sync::Once,
 };
 
+/// Creates and saves thumbnail, then returns its path
 pub fn thumbnail(filepath: &str, size: ThumSize) -> Result<PathBuf> {
     // initialize MagickWand to create thumbnail
     let start: Once = Once::new();
@@ -48,7 +49,6 @@ pub fn gen_thumb_path(filepath: &str, size: ThumSize) -> Result<PathBuf> {
     cache.push(size.path());
     cache.push(filename);
 
-    dbg!(&cache);
     Ok(cache)
 }
 
@@ -65,6 +65,7 @@ pub fn get_cache_path() -> Result<PathBuf> {
 pub fn get_cache_fail_path() -> Result<PathBuf> {
     let mut cache = get_cache_path()?;
     cache.push("fail");
+
     Ok(cache)
 }
 
