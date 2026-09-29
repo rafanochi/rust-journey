@@ -6,7 +6,7 @@ use mime::Mime;
 use std::{
     fs,
     io::Write,
-    path::{Path, PathBuf, absolute},
+    path::{Path, PathBuf},
     sync::Once,
 };
 
