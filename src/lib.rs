@@ -14,7 +14,8 @@ static THUMB_IMAGE_FORMAT: Name = PNG;
 
 #[derive(Debug)]
 pub struct Meta {
-    uri: Uri,
+    // TODO: write custom URI struct
+    uri: String,
     mtime: i64,
     size: Option<u64>,
     mimetype: Option<Mime>,
@@ -25,9 +26,10 @@ pub struct Meta {
 impl Meta {
     fn fetch_meta(filepath: &Path, wand: &MagickWand) -> Result<Meta> {
         let metadata = metadata(filepath)?;
-        let path = filepath.to_string_lossy().to_string();
-        dbg!(&path);
-        let uri = Uri::try_from(path)?;
+        let uri = format!("file://{}", filepath.to_str().unwrap_or_default());
+
+        dbg!(&uri);
+        println!("UURRRIIIII: {uri:#?}");
 
         Ok(Meta {
             uri,

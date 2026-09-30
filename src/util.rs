@@ -44,9 +44,12 @@ pub fn thumbnail(filepath: &str, size: ThumSize) -> Result<PathBuf> {
 }
 
 pub fn gen_thumb_path(filepath: &str, size: ThumSize) -> Result<PathBuf> {
-    let filename = gen_filename(filepath);
+    // generates path to thumnbnails cache
     let mut cache = get_cache_path()?;
     cache.push(size.path());
+
+    // adds filename to the end of cache path
+    let filename = gen_filename(filepath);
     cache.push(filename);
 
     Ok(cache)
