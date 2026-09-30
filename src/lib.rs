@@ -1,7 +1,6 @@
 pub mod util;
 
 use anyhow::Result;
-use http::Uri;
 use magick_rust::MagickWand;
 use mime::{Mime, Name, PNG};
 use std::{collections::HashMap, fs::metadata, os::unix::fs::MetadataExt, path::Path};
