@@ -26,7 +26,6 @@ pub fn thumbnail(filepath: &str, size: ThumSize) -> Result<PathBuf> {
     // add metadata to thumbnail
     let path = PathBuf::from(filepath).canonicalize()?;
     let meta = Meta::fetch_meta(&path, &wand)?;
-    dbg!(&meta);
     for (k, v) in meta.to_hashmap() {
         wand.set_image_property(k, &v)?;
     }

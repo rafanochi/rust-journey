@@ -27,9 +27,6 @@ impl Meta {
         let metadata = metadata(filepath)?;
         let uri = format!("file://{}", filepath.to_str().unwrap_or_default());
 
-        dbg!(&uri);
-        println!("UURRRIIIII: {uri:#?}");
-
         Ok(Meta {
             uri,
             mtime: metadata.mtime(),
