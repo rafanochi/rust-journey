@@ -38,8 +38,16 @@
           inherit src;
           strictDeps = true;
 
-          buildInputs = [
+          nativeBuildInputs = with pkgs;[
+            pkg-config
+            openssl
+          ];
+
+          buildInputs = with pkgs;[
             # Add additional build inputs here
+            pkg-config
+            openssl
+            rust-analyzer
           ]
           ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
             # Additional darwin specific inputs can be set here
